@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UTP Assistant</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="logo">
+                <i class="fa-solid fa-robot"></i>
+            </div>
+
+            <div class="brand-text">
+                <strong>UTP Assistant</strong>
+                <span>UTPConsult</span>
+            </div>
+        </div>
+
+        <div class="menu-title">
+            MENÚ PRINCIPAL
+        </div>
+
+        <nav>
+
+            <button class="nav-btn active" data-view="dashboard">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </button>
+
+            <button class="nav-btn" data-view="analizar">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>Analizar correo</span>
+            </button>
+
+            <button class="nav-btn" data-view="prospectos">
+                <i class="fa-solid fa-building"></i>
+                <span>Prospectos</span>
+            </button>
+
+            <button class="nav-btn" data-view="tareas">
+                <i class="fa-solid fa-list-check"></i>
+                <span>Tareas</span>
+            </button>
+
+            <button class="nav-btn" data-view="reuniones">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Reuniones</span>
+            </button>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- CONTENIDO -->
+    <main class="content">
+
+        <header>
+
+            <div>
+                <h1 id="page-title">Dashboard</h1>
+                <p>Automatización inteligente para UTPConsult</p>
+            </div>
+
+        </header>
+
+
+        <!-- DASHBOARD -->
+        <section id="view-dashboard" class="view active">
+
+            <div class="cards">
+
+                <div class="card">
+                    <div class="card-icon purple">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+
+                    <div>
+                        <small>Prospectos</small>
+                        <strong id="count-prospectos">0</strong>
+                    </div>
+                </div>
+
+
+                <div class="card">
+                    <div class="card-icon blue">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+
+                    <div>
+                        <small>Tareas pendientes</small>
+                        <strong id="count-tareas">0</strong>
+                    </div>
+                </div>
+
+
+                <div class="card">
+                    <div class="card-icon green">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+
+                    <div>
+                        <small>Reuniones</small>
+                        <strong id="count-reuniones">0</strong>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="welcome">
+
+                <div class="welcome-content">
+
+                    <span class="eyebrow">
+                        <i class="fa-solid fa-sparkles"></i>
+                        ASISTENTE DE IA
+                    </span>
+
+                    <h2>
+                        Automatiza el trabajo de tus correos
+                    </h2>
+
+                    <p>
+                        UTP Assistant analiza los mensajes de clientes,
+                        identifica requisitos y genera tareas, prospectos,
+                        reuniones y respuestas sugeridas.
+                    </p>
+
+                    <button class="primary"
+                            onclick="showView('analizar')">
+
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        Analizar un correo
+
+                    </button>
+
+                </div>
+
+                <div class="welcome-icon">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ANALIZAR -->
+        <section id="view-analizar" class="view">
+
+            <div class="panel">
+
+                <div class="section-heading">
+
+                    <div class="heading-icon">
+                        <i class="fa-solid fa-envelope-open-text"></i>
+                    </div>
+
+                    <div>
+                        <h2>Analizar correo</h2>
+
+                        <p class="muted">
+                            Pega aquí un correo o un hilo completo de conversaciones.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <textarea id="correo"
+                    placeholder="Ejemplo:
+
+Hola equipo de UTPConsult,
+
+Somos Empresa XYZ y necesitamos desarrollar una aplicación web...
+Nos gustaría reunirnos esta semana para revisar los requisitos.
+
+Saludos,
+Juan Pérez"></textarea>
+
+
+                <button id="btn-analizar"
+                        class="primary"
+                        onclick="analizarCorreo()">
+
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    Analizar
+
+                </button>
+
+
+                <div id="loading" class="loading hidden">
+
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+
+                    Analizando el correo...
+
+                </div>
+
+            </div>
+
+
+            <div id="resultado" class="hidden">
+
+                <div class="result-grid">
+
+                    <div class="panel">
+
+                        <div class="section-heading">
+
+                            <div class="heading-icon small">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+
+                            <h3>Información del cliente</h3>
+
+                        </div>
+
+                        <div id="cliente"></div>
+
+                    </div>
+
+
+                    <div class="panel">
+
+                        <div class="section-heading">
+
+                            <div class="heading-icon small">
+                                <i class="fa-solid fa-file-lines"></i>
+                            </div>
+
+                            <h3>Resumen</h3>
+
+                        </div>
+
+                        <p id="resumen"></p>
+
+                        <div id="prioridad"></div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panel-title">
+
+                        <div>
+                            <h3>
+                                <i class="fa-solid fa-clipboard-list"></i>
+                                Requisitos detectados
+                            </h3>
+                        </div>
+
+                        <button class="secondary"
+                                onclick="guardarProspecto()">
+
+                            <i class="fa-solid fa-user-plus"></i>
+                            Registrar prospecto
+
+                        </button>
+
+                    </div>
+
+                    <ul id="requisitos"></ul>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panel-title">
+
+                        <h3>
+                            <i class="fa-solid fa-list-check"></i>
+                            Tareas detectadas
+                        </h3>
+
+                        <button class="secondary"
+                                onclick="guardarTareas()">
+
+                            <i class="fa-solid fa-plus"></i>
+                            Crear tareas
+
+                        </button>
+
+                    </div>
+
+                    <div id="lista-tareas"></div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panel-title">
+
+                        <h3>
+                            <i class="fa-solid fa-calendar-days"></i>
+                            Reunión
+                        </h3>
+
+                        <button class="secondary"
+                                onclick="guardarReunion()">
+
+                            <i class="fa-solid fa-calendar-plus"></i>
+                            Agendar reunión
+
+                        </button>
+
+                    </div>
+
+                    <div id="reunion"></div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <h3>
+                        <i class="fa-solid fa-reply"></i>
+                        Respuesta sugerida
+                    </h3>
+
+                    <textarea id="respuesta" readonly></textarea>
+
+                    <button class="secondary"
+                            onclick="copiarRespuesta()">
+
+                        <i class="fa-solid fa-copy"></i>
+                        Copiar respuesta
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div id="error" class="error hidden"></div>
+
+        </section>
+
+
+        <!-- PROSPECTOS -->
+        <section id="view-prospectos" class="view">
+
+            <div class="panel">
+
+                <div class="panel-title">
+
+                    <div>
+                        <h2>
+                            <i class="fa-solid fa-building"></i>
+                            Prospectos
+                        </h2>
+
+                        <p class="muted">
+                            Clientes registrados automáticamente.
+                        </p>
+                    </div>
+
+                    <button class="secondary"
+                            onclick="cargarProspectos()">
+
+                        <i class="fa-solid fa-rotate"></i>
+                        Actualizar
+
+                    </button>
+
+                </div>
+
+                <div id="tabla-prospectos"></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- TAREAS -->
+        <section id="view-tareas" class="view">
+
+            <div class="panel">
+
+                <div class="panel-title">
+
+                    <div>
+                        <h2>
+                            <i class="fa-solid fa-list-check"></i>
+                            Tareas
+                        </h2>
+
+                        <p class="muted">
+                            Actividades creadas a partir de los correos.
+                        </p>
+                    </div>
+
+                    <button class="secondary"
+                            onclick="cargarTareas()">
+
+                        <i class="fa-solid fa-rotate"></i>
+                        Actualizar
+
+                    </button>
+
+                </div>
+
+                <div id="tabla-tareas"></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- REUNIONES -->
+        <section id="view-reuniones" class="view">
+
+            <div class="panel">
+
+                <div class="panel-title">
+
+                    <div>
+                        <h2>
+                            <i class="fa-solid fa-calendar-days"></i>
+                            Reuniones
+                        </h2>
+
+                        <p class="muted">
+                            Seguimientos detectados y programados.
+                        </p>
+                    </div>
+
+                    <button class="secondary"
+                            onclick="cargarReuniones()">
+
+                        <i class="fa-solid fa-rotate"></i>
+                        Actualizar
+
+                    </button>
+
+                </div>
+
+                <div id="tabla-reuniones"></div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+</body>
+</html>
